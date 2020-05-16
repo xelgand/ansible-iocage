@@ -229,9 +229,15 @@ def _props_to_str(props):
         if _val == '-' or _val == '' or not _val:
             continue
         if _val in ['on', True]:
-            argstr += '{0}=1 '.format(_prop)
+            if _prop in ['vnet', 'boot']:
+                argstr += '{0}=on '.format(_prop)
+            else:
+                argstr += '{0}=1 '.format(_prop)
         elif _val in ['off', False]:
-            argstr += '{0}=0 '.format(_prop)
+            if _prop in ['vnet', 'boot']:
+                argstr += '{0}=off '.format(_prop)
+            else:
+                argstr += '{0}=0 '.format(_prop)
         elif _val in ['-','none']:
             argstr += '{0}={1} '.format(_prop,_val)
         else:
@@ -372,9 +378,15 @@ def jail_set(module, iocage_path, name, properties={}):
         _val = properties[_property]
         _oval = _existing_props[_property]
         if _val in [0,'off',False]:
-            propval = 0
+            if _property in ['vnet', 'boot']:
+                propval = 'off'
+            else:
+                propval = 0
         elif _val in [1,'on',True]:
-            propval = 1
+            if _property in ['vnet', 'boot']:
+                propval = 'on'
+            else:
+                propval = 1
         elif isinstance(_oval,str):
             if _val == '':
                 propval = 'none'
